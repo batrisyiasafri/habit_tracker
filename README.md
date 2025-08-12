@@ -62,6 +62,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contributions
 Feel free to open issues or submit pull requests. Any contributions are welcome!
-
-## Contact
-Created by Batrisyia Safri
