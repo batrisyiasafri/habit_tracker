@@ -7,3 +7,14 @@ __pycache__/
 .git
 .vscode/
 node_modules/
+__pycache__/
+*.pyc
+instance/
+.env
+*.sqlite3
+venv/
+.env.*
+*.log
+.git
+.vscode/
+*.db
