@@ -21,7 +21,7 @@ Built with Flask, SQLite, and Bootstrap-inspired styling.
 
    ```bash
    git clone https://github.com/batrisyiasafri/habit_tracker.git
-   cd habit-tracker
+   cd habit_tracker
 
 
 1. Create a virtual environment and activate it:
@@ -42,6 +42,18 @@ flask db upgrade  # or if you don't use migrations, just run the app and it will
    flask run
 
 5. Open your browser and visit http://localhost:5000
+
+## Docker Usage
+
+1. Build the Docker image
+   ```bash
+   docker build -t flask-app
+
+2. Run the container
+   ```bash
+   docker run -p 5000:5000 flask-app
+
+3. Visit http://localhost:5000 in your browser.
 
 ## Usage
 - Add new habits via the input box on the homepage.
