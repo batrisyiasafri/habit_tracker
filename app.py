@@ -10,6 +10,8 @@ from calendar import monthrange, weekday
 app = Flask(__name__)
 app.secret_key = 'secret-me'
 
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # setup database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///habits.db'
 db = SQLAlchemy(app)
