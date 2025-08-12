@@ -43,8 +43,9 @@ with app.app_context():
 # to index page
 @app.route('/')
 def index():
-    if 'user_id' not in session:
-        return redirect(url_for('refresh'))
+    # fake login for test only
+    session['user_id'] = 1
+    return redirect(url_for('refresh'))
 
     habits = Habit.query.filter_by(user_id=session['user_id']).all()
     today = date.today()
