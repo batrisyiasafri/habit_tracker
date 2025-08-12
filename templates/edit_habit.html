@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Habit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            padding: 0.75rem;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            text-align: center;
+            color: #777;
+            font-size: 0.95rem;
+            text-decoration: none;
+            margin-top: 1rem;
+            display: block;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            form {
+                padding: 1rem;
+            }
+
+            button, input[type="text"], input[type="date"], select, textarea {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Habit</h1>
+
+    <form action="{{ url_for('edit_habit', habit_id=habit.id) }}" method="POST">
+        <label for="habit_name">Name</label>
+        <input type="text" id="habit_name" name="habit_name" value="{{ habit.name }}" required>
+
+        <label for="description">Description / Notes</label>
+        <textarea id="description" name="description">{{ habit.description or '' }}</textarea>
+
+        <label for="start_date">Start Date</label>
+        <input type="date" id="start_date" name="start_date" value="{{ habit.start_date.strftime('%d-%m-%Y') if habit.start_date else '' }}">
+
+        <label for="category">Category</label>
+        <select id="category" name="category">
+            <option value="" {% if not habit.category %}selected{% endif %}>-- None --</option>
+            <option value="Health" {% if habit.category == 'Health' %}selected{% endif %}>Health</option>
+            <option value="Work" {% if habit.category == 'Work' %}selected{% endif %}>Work</option>
+            <option value="Personal" {% if habit.category == 'Personal' %}selected{% endif %}>Personal</option>
+        </select>
+
+        <button type="submit">Save</button>
+        <a href="{{ url_for('index') }}">← Cancel and go back</a>
+    </form>
+</body>
+</html>

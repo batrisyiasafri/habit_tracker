@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Habit Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 600px; 
+            margin: 2rem auto; 
+            padding: 0 1rem;
+            color: #333;
+            background: #f9f9f9;
+        }
+
+        h1 { 
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        form { 
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="text"] { 
+            flex-grow: 1;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button { 
+            padding: 0 1.2rem;
+            font-size: 1rem;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none; 
+            padding-left: 0; 
+            margin: 0;
+        }
+
+        li { 
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem; 
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+            display: flex;
+            flex-direction: column;
+            font-size: 1.1rem;
+        }
+
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .habit-details {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 0.3rem;
+        }
+        .habit-details span {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+
+        .habit-actions {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .habit-actions a {
+            margin-right: 1rem;
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .habit-actions a:hover {
+            text-decoration: underline;
+        }
+
+        .done {
+            color: green;
+            font-weight: 700;
+            user-select: none;
+            margin-left: 0.5rem;
+        }
+
+        .skipped {
+            color: orange;
+            font-weight: 700;
+            user-select: none;
+            margin-left: 0.5rem;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        ul.flashes {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1rem;
+        }
+        ul.flashes li.success {
+            color: green;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        ul.flashes li.error {
+            color: red;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                margin: 1rem;
+            }
+            li {
+                font-size: 1rem;
+                padding: 0.5rem 0.75rem;
+            }
+            button, input[type="text"] {
+                font-size: 0.9rem;
+            }
+        }
+
+        .dashboard-stats {
+            display: flex;
+            justify-content: space-between;
+            background-color: #e9f5ff;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 500px) {
+            .dashboard-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <h1>My Habits</h1>
+
+    <div class="dashboard-stats">
+        <div><strong>Total Habits:</strong> {{ habits|length }}</div>
+        <div><strong>Completed Today:</strong> {{ done_today|length }}</div>
+        <div><strong>Date:</strong> {{ today.strftime('%d-%m-%Y') }}</div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ 'success' if category == 'success' else 'error' }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('add_habit') }}" method="POST">
+        <input type="text" name="habit_name" placeholder="New Habit" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for habit in habits %}
+        <li>
+            <div class="habit-header">
+                <strong>{{ habit.name }}</strong>
+                <div>
+                    {% set log_today = None %}
+                    {% for log in habit.logs %}
+                        {% if log.date == today %}
+                            {% set log_today = log %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if log_today %}
+                        {% if log_today.status == 'done' %}
+                            <span class="done">✅ Done</span>
+                        {% elif log_today.status == 'skipped' %}
+                            <span class="skipped">⏸️ Skipped</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="habit-details">
+                {% if habit.description %}
+                    <span><strong>Description:</strong> {{ habit.description }}</span>
+                {% endif %}
+                {% if habit.start_date %}
+                    <span><strong>Started:</strong> {{ habit.start_date.strftime('%d-%m-%Y') }}</span>
+                {% endif %}
+                {% if habit.category %}
+                    <span><strong>Category:</strong> {{ habit.category }}</span>
+                {% endif %}
+            </div>
+
+            <div class="habit-details">
+                <span><strong>Total Completions:</strong> {{ habit_stats[habit.id]['total'] }}</span>
+                <span><strong>Current Streak:</strong> {{ habit_stats[habit.id]['current'] }}</span>
+                <span><strong>Longest Streak:</strong> {{ habit_stats[habit.id]['longest'] }}</span>
+            </div>
+
+            <div class="habit-actions">
+                <a href="#" class="toggle-done" data-habit-id="{{ habit.id }}" data-status="done">✅ Done</a>
+                <a href="#" class="toggle-done" data-habit-id="{{ habit.id }}" data-status="skipped">⏸️ Skip</a>
+                <a href="#" class="toggle-done" data-habit-id="{{ habit.id }}" data-status="undone">↩️ Undo</a>
+                <a href="{{ url_for('edit_habit', habit_id=habit.id) }}">Edit</a>
+                <a href="{{ url_for('delete_habit', habit_id=habit.id) }}">Delete</a>
+                <a href="{{ url_for('habit_history', habit_id=habit.id) }}">History</a>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% if habits|length == 0 %}
+            <p style="text-align:center; color:#777;">No habits yet. Start building one today!</p>
+        {% endif %}
+
+    </ul>
+
+    <p><a href="{{ url_for('refresh') }}">↻</a></p>
+
+<script>
+  document.querySelectorAll('.toggle-done').forEach(link => {
+    link.addEventListener('click', function(event) {
+      event.preventDefault();
+      const habitId = this.dataset.habitId;
+      const status = this.dataset.status; 
+      fetch(`/toggle_done/${habitId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: status })
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert('Failed to update habit status.');
+        }
+      })
+      .catch(() => alert('Error updating habit status.'));
+    });
+  });
+</script>
+
+
+
+</body>
+</html>

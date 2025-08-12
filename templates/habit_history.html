@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Habit History - {{ habit.name }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.3rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    .day-name, .day {
+      text-align: center;
+      padding: 0.5rem 0;
+      font-weight: 600;
+    }
+    .day-name {
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+    }
+    .day {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      user-select: none;
+    }
+    .day.completed {
+      background-color: #28a745;
+      color: white;
+      font-weight: 700;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .navigation a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+    }
+    .navigation a:hover {
+      text-decoration: underline;
+    }
+    
+    p {
+        text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Habit History: {{ habit.name }}</h1>
+  <p><a href="{{ url_for('index') }}">&larr; Back to Habits</a></p>
+
+
+  <div class="navigation">
+    <a href="{{ url_for('habit_history', habit_id=habit.id, year=prev_year, month=prev_month) }}">&lt; Previous</a>
+    <div><strong>{{ month }}/{{ year }}</strong></div>
+    <a href="{{ url_for('habit_history', habit_id=habit.id, year=next_year, month=next_month) }}">Next &gt;</a>
+  </div>
+
+  <div class="calendar">
+    <!-- Day Names -->
+    {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+      <div class="day-name">{{ day }}</div>
+    {% endfor %}
+
+    <!-- Empty slots for days before 1st day of the month -->
+    {% for _ in range(first_weekday) %}
+      <div></div>
+    {% endfor %}
+
+    <!-- Days -->
+    {% for day_num in range(1, num_days + 1) %}
+      <div class="day {% if day_num in completed_days %}completed{% endif %}">
+        {{ day_num }}
+      </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
