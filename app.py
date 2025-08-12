@@ -43,9 +43,7 @@ with app.app_context():
 # to index page
 @app.route('/')
 def index():
-    # fake login for test only
-    session['user_id'] = 1
-    return redirect(url_for('refresh'))
+    session['user_id'] = 1  # fake login for testing
 
     habits = Habit.query.filter_by(user_id=session['user_id']).all()
     today = date.today()
@@ -64,12 +62,12 @@ def index():
         }
 
     return render_template(
-        'index.html', 
-        habits=habits, 
-        today=today, 
+        'index.html',
+        habits=habits,
+        today=today,
         done_today=done_today,
         habit_stats=habit_stats
-        )
+    )
 
 # add habit
 @app.route('/add_habit', methods=['POST'])
@@ -263,7 +261,7 @@ def refresh():
     session['user_id'] = 1 
     return redirect(url_for('index'))
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=False)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)
 
 
