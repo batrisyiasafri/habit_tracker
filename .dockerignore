@@ -1,14 +1,5 @@
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.db
-.env
-.git
-.vscode/
-node_modules/
-__pycache__/
-*.pyc
 instance/
 .env
 *.sqlite3
