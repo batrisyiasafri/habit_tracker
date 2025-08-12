@@ -25,17 +25,21 @@ Built with Flask, SQLite, and Bootstrap-inspired styling.
 
 
 1. Create a virtual environment and activate it:
-python3 -m venv venv
-source venv/bin/activate   # On Windows use: venv\Scripts\activate
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate   # On Windows use: venv\Scripts\activate
 
 2. Install dependencies:
-pip install -r requirements.txt
+   ```bash
+   pip install -r requirements.txt
 
 3. Initialize the database:
+
 flask db upgrade  # or if you don't use migrations, just run the app and it will create the DB
 
 4. Run the app:
-flask run
+   ```bash
+   flask run
 
 5. Open your browser and visit http://localhost:5000
 
@@ -60,5 +64,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Feel free to open issues or submit pull requests. Any contributions are welcome!
 
 ## Contact
-Created by Batrisyia Safri - imnotsharing@sorry.com
+Created by Batrisyia Safri
 Project Link: https://github.com/batrisyiasafri/habit_tracker
